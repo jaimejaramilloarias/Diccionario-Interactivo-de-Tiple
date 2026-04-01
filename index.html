@@ -6,48 +6,48 @@
     <title>Diapasón Interactivo - Tiple Colombiano</title>
     <style>
         :root {
-            /* Tema 1: Madera Clara (Por defecto) */
-            --fondo: #F9F7F1;
-            --texto: #332B25;
-            --primario: #5C4033;
-            --primario-hover: #3E2B22;
-            --madera: #EAE0C8; 
-            --madera-oscura: #5C4033;
-            --traste: #A0A0A0;
+            /* Tema 1: Marfil Moderno (Por defecto) */
+            --fondo: #F3F5F9;
+            --texto: #1F2937;
+            --primario: #1F6FEB;
+            --primario-hover: #175CC1;
+            --madera: #DDE4F0;
+            --madera-oscura: #334155;
+            --traste: #94A3B8;
             --peligro: #C0392B; --peligro-hover: #922B21;
             --exito: #27AE60; --exito-hover: #1E8449;
             --info: #2980B9; --info-hover: #1F618D;
-            --caja-fondo: #FFF;
-            --caja-borde: #D5CABD;
-            --caja-secundaria: #FDFBFA;
+            --caja-fondo: #FFFFFF;
+            --caja-borde: #CBD5E1;
+            --caja-secundaria: #EEF2F8;
         }
 
         [data-theme="dark"] {
-            /* Tema 2: Noche Acústica (Modo Oscuro) */
-            --fondo: #1A1A1A;
-            --texto: #EAEAEA;
-            --primario: #D4A373;
-            --primario-hover: #E6CCB2;
-            --madera: #362922;
-            --madera-oscura: #D4A373;
-            --traste: #666666;
-            --caja-fondo: #2A2A2A;
-            --caja-borde: #444444;
-            --caja-secundaria: #222222;
+            /* Tema 2: Carbono Neón (Modo Oscuro) */
+            --fondo: #0F172A;
+            --texto: #E2E8F0;
+            --primario: #38BDF8;
+            --primario-hover: #0EA5E9;
+            --madera: #1E293B;
+            --madera-oscura: #0B1220;
+            --traste: #64748B;
+            --caja-fondo: #111827;
+            --caja-borde: #334155;
+            --caja-secundaria: #0B1220;
         }
 
         [data-theme="classic"] {
-            /* Tema 3: Caoba Tradicional */
-            --fondo: #F4EBE1;
-            --texto: #2C1810;
-            --primario: #8B3A2B;
-            --primario-hover: #6B2B20;
-            --madera: #C17754;
-            --madera-oscura: #4A2511;
-            --traste: #B0A090;
-            --caja-fondo: #FFFBF5;
-            --caja-borde: #D8C3B3;
-            --caja-secundaria: #FDF9F2;
+            /* Tema 3: Caoba Premium */
+            --fondo: #F7F1E8;
+            --texto: #2F1E17;
+            --primario: #A44A3F;
+            --primario-hover: #85382F;
+            --madera: #C98967;
+            --madera-oscura: #5B2D1F;
+            --traste: #9A8A7A;
+            --caja-fondo: #FFFDF9;
+            --caja-borde: #D9C4B6;
+            --caja-secundaria: #F8EFE7;
         }
         
         body {
@@ -68,7 +68,7 @@
         
         .subtitle {
             text-align: center;
-            color: #7f8c8d;
+            color: #64748b;
             margin-bottom: 20px;
             font-size: 1.1em;
         }
@@ -103,7 +103,7 @@
             font-size: 16px;
             cursor: pointer;
             background-color: var(--caja-borde);
-            color: #333;
+            color: #1f2937;
             border: none;
             border-radius: 6px 6px 0 0;
             font-weight: bold;
@@ -119,7 +119,7 @@
             background: var(--caja-fondo);
             padding: 25px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.09);
             flex-grow: 1;
             border: 1px solid var(--caja-borde);
         }
@@ -145,12 +145,12 @@
         button.danger { background-color: var(--peligro); } button.danger:hover { background-color: var(--peligro-hover); }
         button.success { background-color: var(--exito); } button.success:hover { background-color: var(--exito-hover); }
         button.info { background-color: var(--info); } button.info:hover { background-color: var(--info-hover); }
-        button.ghost { background-color: var(--caja-borde); color: #333; } button.ghost:hover { filter: brightness(0.9); }
+        button.ghost { background-color: var(--caja-borde); color: #1f2937; } button.ghost:hover { filter: brightness(0.92); }
         button.small { padding: 4px 10px; font-size: 13px; margin-left: 5px; }
 
         .instructions { background: var(--caja-secundaria); border-left: 4px solid var(--info); padding: 10px 15px; margin-bottom: 20px; border-radius: 0 4px 4px 0; font-size: 14.5px; }
 
-        .chord-comment { background-color: #fff3cd; color: #856404; padding: 8px 12px; border-left: 4px solid #ffeeba; border-radius: 4px; margin-bottom: 15px; font-size: 14px; font-style: italic; display: none; width: fit-content; }
+        .chord-comment { background-color: #fff7db; color: #7a5200; padding: 8px 12px; border-left: 4px solid #f1c75b; border-radius: 4px; margin-bottom: 15px; font-size: 14px; font-style: italic; display: none; width: fit-content; }
 
         /* Diapasón Normal */
         .fretboard-container { overflow-x: auto; padding-bottom: 25px; } 
@@ -193,10 +193,10 @@
 
         .cart-grid { display: grid; grid-template-columns: 1fr; gap: 25px; margin-top: 20px; }
         @media (min-width: 800px) { .cart-grid { grid-template-columns: repeat(2, 1fr); } }
-        .cart-item { background: var(--caja-fondo); border: 1px solid var(--caja-borde); border-radius: 6px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); text-align: center; }
+        .cart-item { background: var(--caja-fondo); border: 1px solid var(--caja-borde); border-radius: 6px; padding: 15px; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06); text-align: center; }
         .cart-item h3 { margin-top: 0; margin-bottom: 5px; font-size: 16px; color: var(--primario); }
 
-        .empty-state { text-align: center; color: #7f8c8d; font-style: italic; margin-top: 30px; }
+        .empty-state { text-align: center; color: #64748b; font-style: italic; margin-top: 30px; }
         
         #saved-list, #equiv-list { list-style: none; padding: 0; }
         .saved-item { background: var(--caja-fondo); border: 1px solid var(--caja-borde); margin-bottom: 10px; padding: 15px; border-radius: 6px; }
@@ -209,7 +209,7 @@
         .modal-close { position: absolute; top: 15px; right: 15px; background: transparent; color: var(--texto); font-size: 20px; border: none; cursor: pointer; }
         .modal-content h3 { border-bottom: 1px solid var(--caja-borde); padding-bottom: 5px; margin-top: 25px; }
 
-        footer { text-align: center; padding: 20px; margin-top: auto; color: #7f8c8d; font-size: 14px; border-top: 1px solid var(--caja-borde); }
+        footer { text-align: center; padding: 20px; margin-top: auto; color: #64748b; font-size: 14px; border-top: 1px solid var(--caja-borde); }
 
         @media print {
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -236,9 +236,9 @@
 
     <div class="top-bar no-print">
         <select id="theme-select" onchange="changeTheme()">
-            <option value="default">Madera Clara</option>
-            <option value="classic">Caoba Tradicional</option>
-            <option value="dark">Noche Acústica</option>
+            <option value="default">Marfil Moderno</option>
+            <option value="classic">Caoba Premium</option>
+            <option value="dark">Carbono Neón</option>
         </select>
         <button onclick="toggleHelp()" class="info" style="border-radius: 20px; padding: 6px 12px;">❓ Ayuda</button>
     </div>
@@ -296,7 +296,7 @@
         <div class="instructions">
             <strong>Dibujo Inteligente Activado:</strong><br>
             • Haz un <strong>clic</strong> para poner o quitar una nota.<br>
-            • La app detectará y pintará automáticamente la <strong>Tónica de verde</strong>.<br>
+            • La app detectará y pintará automáticamente la <strong>Fundamental de verde</strong>.<br>
             • Pasa el ratón (hover) sobre cualquier nota para ver su <strong>Intervalo matemático</strong>.
         </div>
 
@@ -356,7 +356,8 @@
                 </select>
                 <input type="text" id="equiv-target-name" placeholder="Ej. m7" style="width: 100px;">
                 
-                <button onclick="addEquivalency()" class="success">Añadir Regla</button>
+                <button id="btn-save-equiv" onclick="addEquivalency()" class="success">Añadir Regla</button>
+                <button id="btn-cancel-equiv-edit" onclick="cancelEquivalencyEdit()" class="danger" style="display:none;">Cancelar Edición</button>
             </div>
         </div>
         <ul id="equiv-list"></ul>
@@ -428,7 +429,7 @@
         // --- CONSTANTES DE TEORÍA MUSICAL ---
         const CHROMATIC = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
         const STRINGS = [{ id: 1, name: 'E', pitch: 4 }, { id: 2, name: 'B', pitch: 11 }, { id: 3, name: 'G', pitch: 7 }, { id: 4, name: 'D', pitch: 2 }];
-        const INTERVALOS = ["Tónica", "b9 / 2m", "9 / 2M", "3m / #9", "3M", "11 / 4j", "#11 / b5", "5j", "#5 / b13", "13 / 6M", "7m", "maj7"];
+        const INTERVALOS = ["Fundamental", "b9 / 2m", "9 / 2M", "3m / #9", "3M", "11 / 4j", "#11 / b5", "5j", "#5 / b13", "13 / 6M", "7m", "maj7"];
         const NUM_FRETS = 15; 
 
         // --- MANEJO DE TEMAS ---
@@ -507,6 +508,7 @@
         
         let adminShape = { 1: [], 2: [], 3: [], 4: [] };
         let editingData = { id: null, variantIndex: null };
+        let editingRuleId = null;
         let cart = []; 
 
         // --- SISTEMA DE LIMPIEZA Y GENERACIÓN ---
@@ -518,40 +520,57 @@
 
         function reGenerateDictionary() {
             let dict = JSON.parse(JSON.stringify(rawDict));
+
+            function shapeSignature(shape) {
+                const normalized = {};
+                [1, 2, 3, 4].forEach(stringId => {
+                    const notes = Array.isArray(shape[stringId]) ? [...shape[stringId]].sort((a, b) => a - b) : [];
+                    normalized[stringId] = notes;
+                });
+                return JSON.stringify(normalized);
+            }
             
             function transposeShape(shape, distance) {
                 let newShape = { 1: [], 2: [], 3: [], 4: [], isDerived: true };
                 let hasC = false;
                 let allFrets = [];
                 const cFrets = { 1: [8, 20], 2: [1, 13], 3: [5, 17], 4: [10, 22] };
-                
-                let minFret = 999;
+                const transposedByString = { 1: [], 2: [], 3: [], 4: [] };
+
                 for (let string in shape) {
                     if (string === 'isDerived') continue;
                     let frets = shape[string];
                     let actualFrets = frets.length > 1 ? frets.filter(f => !cFrets[string].includes(f)) : frets;
-                    for (let f of actualFrets) {
-                        let nf = f + distance;
-                        if (nf < minFret) minFret = nf;
-                    }
+                    for (let f of actualFrets) transposedByString[string].push(f + distance);
                 }
-                
-                let octShift = minFret < 0 ? 12 : 0;
+
+                const flat = Object.values(transposedByString).flat();
+                if (flat.length < 3) return null;
+
+                let minFret = Math.min(...flat);
+                let maxFret = Math.max(...flat);
+                let octShift = 0;
+
+                if (minFret < 0 && maxFret + 12 <= 15) {
+                    octShift = 12;
+                } else if (maxFret > 15 && minFret - 12 >= 0) {
+                    octShift = -12;
+                }
+
                 let valid = true;
-                
-                for (let string in shape) {
-                    if (string === 'isDerived') continue;
-                    let frets = shape[string];
-                    let actualFrets = frets.length > 1 ? frets.filter(f => !cFrets[string].includes(f)) : frets;
-                    for (let f of actualFrets) {
-                        let newFret = f + distance + octShift;
-                        if (newFret < 0 || newFret > 15) valid = false;
+                for (let string in transposedByString) {
+                    transposedByString[string].forEach(f => {
+                        const newFret = f + octShift;
+                        if (newFret < 0 || newFret > 15) {
+                            valid = false;
+                            return;
+                        }
                         newShape[string].push(newFret);
                         allFrets.push({string: parseInt(string), fret: newFret});
                         if (cFrets[string].includes(newFret)) hasC = true;
-                    }
+                    });
                 }
-                
+
                 if (!valid || allFrets.length < 3) return null;
                 
                 if (!hasC) {
@@ -584,15 +603,18 @@
                 }
 
                 let distance = (12 - CHROMATIC.indexOf(rule.note)) % 12;
+                if (distance > 6) distance -= 12; // usar el desplazamiento más corto (ej: D => -2 en vez de +10)
+                const existingSignatures = new Set(targetChord.shapes.map(shapeSignature));
 
                 sourceChord.shapes.forEach(shape => {
                     if (shape.isDerived) return; 
                     let newShape = transposeShape(shape, distance);
                     if (newShape) {
-                        let isDuplicate = targetChord.shapes.some(existing => 
-                            JSON.stringify(existing[1]) === JSON.stringify(newShape[1]) && JSON.stringify(existing[2]) === JSON.stringify(newShape[2])
-                        );
-                        if (!isDuplicate) targetChord.shapes.push(newShape);
+                        const signature = shapeSignature(newShape);
+                        if (!existingSignatures.has(signature)) {
+                            targetChord.shapes.push(newShape);
+                            existingSignatures.add(signature);
+                        }
                     }
                 });
             });
@@ -611,7 +633,10 @@
                 li.innerHTML = `
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span>Si toco un <strong>C ${rule.source}</strong>, genera automáticamente un <strong>${rule.note} ${rule.target}</strong></span>
-                        <button class="danger small" onclick="deleteEquivalency('${rule.id}')">Eliminar Regla</button>
+                        <div>
+                            <button class="info small" onclick="editEquivalency('${rule.id}')">Editar</button>
+                            <button class="danger small" onclick="deleteEquivalency('${rule.id}')">Eliminar</button>
+                        </div>
                     </div>
                 `;
                 list.appendChild(li);
@@ -625,30 +650,68 @@
                 opt.value = name; opt.textContent = name;
                 sourceSelect.appendChild(opt);
             });
+
+            if (editingRuleId && !rules.some(r => r.id === editingRuleId)) {
+                cancelEquivalencyEdit();
+            }
         }
 
         function addEquivalency() {
             const source = document.getElementById('equiv-source').value;
             const note = document.getElementById('equiv-target-note').value;
             const target = document.getElementById('equiv-target-name').value.trim();
+            const isEditing = editingRuleId !== null;
             
             if (!target) return alert('Debes escribir el nombre del acorde equivalente (Ej. m7)');
-            
-            rules.push({ id: 'd' + Date.now(), source, note, target });
+
+            if (isEditing) {
+                const rule = rules.find(r => r.id === editingRuleId);
+                if (rule) {
+                    rule.source = source;
+                    rule.note = note;
+                    rule.target = target;
+                }
+            } else {
+                rules.push({ id: 'd' + Date.now(), source, note, target });
+            }
+
             localStorage.setItem('tipleDerivations', JSON.stringify(rules));
             
             document.getElementById('equiv-target-name').value = '';
+            cancelEquivalencyEdit(false);
             
             reGenerateDictionary();
             renderEquivalencies();
             renderSavedList();
             updateUserSelect();
-            alert("Regla añadida y diccionario actualizado.");
+            alert(isEditing ? "Regla actualizada y diccionario regenerado." : "Regla añadida y diccionario actualizado.");
+        }
+
+        function editEquivalency(id) {
+            const rule = rules.find(r => r.id === id);
+            if (!rule) return;
+            editingRuleId = id;
+            document.getElementById('equiv-source').value = rule.source;
+            document.getElementById('equiv-target-note').value = rule.note;
+            document.getElementById('equiv-target-name').value = rule.target;
+            document.getElementById('btn-save-equiv').textContent = "Actualizar Regla";
+            document.getElementById('btn-cancel-equiv-edit').style.display = "inline-block";
+        }
+
+        function cancelEquivalencyEdit(clearInputs = true) {
+            const wasEditing = editingRuleId !== null;
+            editingRuleId = null;
+            document.getElementById('btn-save-equiv').textContent = "Añadir Regla";
+            document.getElementById('btn-cancel-equiv-edit').style.display = "none";
+            if (clearInputs || wasEditing) {
+                document.getElementById('equiv-target-name').value = '';
+            }
         }
 
         function deleteEquivalency(id) {
             rules = rules.filter(r => r.id !== id);
             localStorage.setItem('tipleDerivations', JSON.stringify(rules));
+            if (editingRuleId === id) cancelEquivalencyEdit();
             reGenerateDictionary();
             renderEquivalencies();
             renderSavedList();
@@ -805,6 +868,24 @@
             reGenerateDictionary(); renderSavedList(); renderEquivalencies();
         }
 
+        function editVariant(id, index) {
+            const item = rawDict.find(d => d.id === id);
+            if (!item || !item.shapes[index]) return;
+            editingData = { id, variantIndex: index };
+            document.getElementById('admin-name').value = item.name;
+            document.getElementById('admin-name').disabled = true;
+            document.getElementById('admin-root').value = item.root;
+            document.getElementById('admin-comment').value = item.comment || '';
+            adminShape = { 1: [], 2: [], 3: [], 4: [] };
+            [1, 2, 3, 4].forEach(s => {
+                adminShape[s] = item.shapes[index][s].map(f => ({ fret: f }));
+            });
+            document.getElementById('btn-save').textContent = "Actualizar Figura";
+            document.getElementById('btn-cancel-edit').style.display = "inline-block";
+            renderAdminShape();
+            switchTab('admin');
+        }
+
         function deleteShape(id) {
             if(!confirm("¿Estás seguro de que deseas borrar este acorde y TODAS sus variantes?")) return;
             rawDict = rawDict.filter(d => d.id !== id);
@@ -827,6 +908,7 @@
                 let variantsHtml = '<ul class="variant-list">';
                 item.shapes.forEach((shape, index) => {
                     variantsHtml += `<li class="variant-item"><span style="width: 80px;">Opción ${index + 1}</span>
+                            <button onclick="editVariant(${item.id}, ${index})" class="info small">Editar</button>
                             <button onclick="deleteVariant(${item.id}, ${index})" class="danger small">Quitar</button></li>`;
                 });
                 variantsHtml += '</ul>';
