@@ -356,7 +356,8 @@
                 </select>
                 <input type="text" id="equiv-target-name" placeholder="Ej. m7" style="width: 100px;">
                 
-                <button onclick="addEquivalency()" class="success">Añadir Regla</button>
+                <button id="btn-save-equiv" onclick="addEquivalency()" class="success">Añadir Regla</button>
+                <button id="btn-cancel-equiv-edit" onclick="cancelEquivalencyEdit()" class="danger" style="display:none;">Cancelar Edición</button>
             </div>
         </div>
         <ul id="equiv-list"></ul>
@@ -507,6 +508,7 @@
         
         let adminShape = { 1: [], 2: [], 3: [], 4: [] };
         let editingData = { id: null, variantIndex: null };
+        let editingRuleId = null;
         let cart = []; 
 
         // --- SISTEMA DE LIMPIEZA Y GENERACIÓN ---
@@ -622,7 +624,10 @@
                 li.innerHTML = `
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span>Si toco un <strong>C ${rule.source}</strong>, genera automáticamente un <strong>${rule.note} ${rule.target}</strong></span>
-                        <button class="danger small" onclick="deleteEquivalency('${rule.id}')">Eliminar Regla</button>
+                        <div>
+                            <button class="info small" onclick="editEquivalency('${rule.id}')">Editar</button>
+                            <button class="danger small" onclick="deleteEquivalency('${rule.id}')">Eliminar</button>
+                        </div>
                     </div>
                 `;
                 list.appendChild(li);
@@ -636,30 +641,68 @@
                 opt.value = name; opt.textContent = name;
                 sourceSelect.appendChild(opt);
             });
+
+            if (editingRuleId && !rules.some(r => r.id === editingRuleId)) {
+                cancelEquivalencyEdit();
+            }
         }
 
         function addEquivalency() {
             const source = document.getElementById('equiv-source').value;
             const note = document.getElementById('equiv-target-note').value;
             const target = document.getElementById('equiv-target-name').value.trim();
+            const isEditing = editingRuleId !== null;
             
             if (!target) return alert('Debes escribir el nombre del acorde equivalente (Ej. m7)');
-            
-            rules.push({ id: 'd' + Date.now(), source, note, target });
+
+            if (isEditing) {
+                const rule = rules.find(r => r.id === editingRuleId);
+                if (rule) {
+                    rule.source = source;
+                    rule.note = note;
+                    rule.target = target;
+                }
+            } else {
+                rules.push({ id: 'd' + Date.now(), source, note, target });
+            }
+
             localStorage.setItem('tipleDerivations', JSON.stringify(rules));
             
             document.getElementById('equiv-target-name').value = '';
+            cancelEquivalencyEdit(false);
             
             reGenerateDictionary();
             renderEquivalencies();
             renderSavedList();
             updateUserSelect();
-            alert("Regla añadida y diccionario actualizado.");
+            alert(isEditing ? "Regla actualizada y diccionario regenerado." : "Regla añadida y diccionario actualizado.");
+        }
+
+        function editEquivalency(id) {
+            const rule = rules.find(r => r.id === id);
+            if (!rule) return;
+            editingRuleId = id;
+            document.getElementById('equiv-source').value = rule.source;
+            document.getElementById('equiv-target-note').value = rule.note;
+            document.getElementById('equiv-target-name').value = rule.target;
+            document.getElementById('btn-save-equiv').textContent = "Actualizar Regla";
+            document.getElementById('btn-cancel-equiv-edit').style.display = "inline-block";
+        }
+
+        function cancelEquivalencyEdit(clearInputs = true) {
+            const wasEditing = editingRuleId !== null;
+            editingRuleId = null;
+            document.getElementById('btn-save-equiv').textContent = "Añadir Regla";
+            document.getElementById('btn-cancel-equiv-edit').style.display = "none";
+            if (clearInputs || wasEditing) {
+                document.getElementById('equiv-target-name').value = '';
+            }
         }
 
         function deleteEquivalency(id) {
             rules = rules.filter(r => r.id !== id);
             localStorage.setItem('tipleDerivations', JSON.stringify(rules));
+            if (editingRuleId === id) cancelEquivalencyEdit();
             reGenerateDictionary();
             renderEquivalencies();
             renderSavedList();
@@ -816,6 +859,24 @@
             reGenerateDictionary(); renderSavedList(); renderEquivalencies();
         }
 
+        function editVariant(id, index) {
+            const item = rawDict.find(d => d.id === id);
+            if (!item || !item.shapes[index]) return;
+            editingData = { id, variantIndex: index };
+            document.getElementById('admin-name').value = item.name;
+            document.getElementById('admin-name').disabled = true;
+            document.getElementById('admin-root').value = item.root;
+            document.getElementById('admin-comment').value = item.comment || '';
+            adminShape = { 1: [], 2: [], 3: [], 4: [] };
+            [1, 2, 3, 4].forEach(s => {
+                adminShape[s] = item.shapes[index][s].map(f => ({ fret: f }));
+            });
+            document.getElementById('btn-save').textContent = "Actualizar Figura";
+            document.getElementById('btn-cancel-edit').style.display = "inline-block";
+            renderAdminShape();
+            switchTab('admin');
+        }
+
         function deleteShape(id) {
             if(!confirm("¿Estás seguro de que deseas borrar este acorde y TODAS sus variantes?")) return;
             rawDict = rawDict.filter(d => d.id !== id);
@@ -838,6 +899,7 @@
                 let variantsHtml = '<ul class="variant-list">';
                 item.shapes.forEach((shape, index) => {
                     variantsHtml += `<li class="variant-item"><span style="width: 80px;">Opción ${index + 1}</span>
+                            <button onclick="editVariant(${item.id}, ${index})" class="info small">Editar</button>
                             <button onclick="deleteVariant(${item.id}, ${index})" class="danger small">Quitar</button></li>`;
                 });
                 variantsHtml += '</ul>';
