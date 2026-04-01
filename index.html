@@ -603,7 +603,6 @@
                 }
 
                 let distance = (12 - CHROMATIC.indexOf(rule.note)) % 12;
-                if (distance > 6) distance -= 12; // usar el desplazamiento más corto (ej: D => -2 en vez de +10)
                 const existingSignatures = new Set(targetChord.shapes.map(shapeSignature));
 
                 sourceChord.shapes.forEach(shape => {
