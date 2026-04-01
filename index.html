@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diapasón Interactivo - Tiple Colombiano</title>
+    <style>
+        :root {
+            /* Tema 1: Madera Clara (Por defecto) */
+            --fondo: #F9F7F1;
+            --texto: #332B25;
+            --primario: #5C4033;
+            --primario-hover: #3E2B22;
+            --madera: #EAE0C8; 
+            --madera-oscura: #5C4033;
+            --traste: #A0A0A0;
+            --peligro: #C0392B; --peligro-hover: #922B21;
+            --exito: #27AE60; --exito-hover: #1E8449;
+            --info: #2980B9; --info-hover: #1F618D;
+            --caja-fondo: #FFF;
+            --caja-borde: #D5CABD;
+            --caja-secundaria: #FDFBFA;
+        }
+
+        [data-theme="dark"] {
+            /* Tema 2: Noche Acústica (Modo Oscuro) */
+            --fondo: #1A1A1A;
+            --texto: #EAEAEA;
+            --primario: #D4A373;
+            --primario-hover: #E6CCB2;
+            --madera: #362922;
+            --madera-oscura: #D4A373;
+            --traste: #666666;
+            --caja-fondo: #2A2A2A;
+            --caja-borde: #444444;
+            --caja-secundaria: #222222;
+        }
+
+        [data-theme="classic"] {
+            /* Tema 3: Caoba Tradicional */
+            --fondo: #F4EBE1;
+            --texto: #2C1810;
+            --primario: #8B3A2B;
+            --primario-hover: #6B2B20;
+            --madera: #C17754;
+            --madera-oscura: #4A2511;
+            --traste: #B0A090;
+            --caja-fondo: #FFFBF5;
+            --caja-borde: #D8C3B3;
+            --caja-secundaria: #FDF9F2;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--fondo);
+            color: var(--texto);
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 95vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        h1, h2, h3 { color: var(--primario); }
+        h1 { text-align: center; margin-bottom: 5px; }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        /* Top Bar (Skins & Ayuda) */
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .top-bar select {
+            padding: 6px 10px;
+            font-size: 13px;
+            border-radius: 20px;
+            background-color: var(--caja-fondo);
+            color: var(--texto);
+        }
+        
+        /* Pestañas */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: var(--caja-borde);
+            color: #333;
+            border: none;
+            border-radius: 6px 6px 0 0;
+            font-weight: bold;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tab-btn:hover { filter: brightness(0.9); }
+        .tab-btn.active { background-color: var(--primario); color: white; }
+        .tab-content {
+            display: none;
+            background: var(--caja-fondo);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            flex-grow: 1;
+            border: 1px solid var(--caja-borde);
+        }
+        .tab-content.active { display: block; }
+
+        /* Badge del Carrito */
+        .badge { background-color: var(--peligro); color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; }
+
+        /* Controles */
+        .controls-group {
+            display: flex; gap: 15px; align-items: center; margin-bottom: 20px; flex-wrap: wrap;
+            background: var(--caja-secundaria); padding: 15px; border: 1px solid var(--caja-borde); border-radius: 6px; justify-content: space-between;
+        }
+        .controls-left { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        .controls-right { display: flex; gap: 10px; align-items: center; }
+
+        select, input, button, .btn-label {
+            padding: 10px 14px; font-size: 15px; border: 1px solid var(--caja-borde); border-radius: 4px; font-family: inherit;
+            background-color: var(--caja-fondo); color: var(--texto);
+        }
+        button, .btn-label { background-color: var(--primario); color: white; cursor: pointer; border: none; transition: background 0.2s; text-align: center; display: inline-block; }
+        button:hover, .btn-label:hover { background-color: var(--primario-hover); }
+        button.danger { background-color: var(--peligro); } button.danger:hover { background-color: var(--peligro-hover); }
+        button.success { background-color: var(--exito); } button.success:hover { background-color: var(--exito-hover); }
+        button.info { background-color: var(--info); } button.info:hover { background-color: var(--info-hover); }
+        button.ghost { background-color: var(--caja-borde); color: #333; } button.ghost:hover { filter: brightness(0.9); }
+        button.small { padding: 4px 10px; font-size: 13px; margin-left: 5px; }
+
+        .instructions { background: var(--caja-secundaria); border-left: 4px solid var(--info); padding: 10px 15px; margin-bottom: 20px; border-radius: 0 4px 4px 0; font-size: 14.5px; }
+
+        .chord-comment { background-color: #fff3cd; color: #856404; padding: 8px 12px; border-left: 4px solid #ffeeba; border-radius: 4px; margin-bottom: 15px; font-size: 14px; font-style: italic; display: none; width: fit-content; }
+
+        /* Diapasón Normal */
+        .fretboard-container { overflow-x: auto; padding-bottom: 25px; } 
+        .fretboard { display: flex; flex-direction: column; background: var(--madera); padding: 10px 0 10px 10px; border-radius: 4px; border: 3px solid var(--madera-oscura); width: fit-content; }
+        .fret-numbers { display: flex; margin-left: 45px; margin-bottom: 5px; }
+        .fret-number { width: 55px; text-align: center; font-size: 13px; font-weight: bold; color: var(--madera-oscura); }
+        .string-row { display: flex; align-items: center; height: 46px; }
+        .string-name { width: 35px; font-weight: bold; color: white; background: var(--madera-oscura); text-align: center; line-height: 28px; height: 28px; border-radius: 14px; margin-right: 10px; font-size: 14px; }
+        .fret { width: 55px; height: 100%; border-right: 3px solid var(--traste); position: relative; display: flex; justify-content: center; align-items: center; }
+        .fret.nut { border-right: 6px solid #FFF; background: #332B25; width: 25px; }
+        .fret.interactive { cursor: pointer; } .fret.interactive:hover { background-color: rgba(255,255,255,0.4); }
+        
+        .fret::before {
+            content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 11px;
+            background: linear-gradient(to bottom, #7A5C43 0px, #7A5C43 1.5px, transparent 1.5px, transparent 4.5px, #7A5C43 4.5px, #7A5C43 6px, transparent 6px, transparent 9px, #7A5C43 9px, #7A5C43 10.5px, transparent 10.5px);
+            transform: translateY(-50%); z-index: 1;
+        }
+        .fret.nut::before { display: none; }
+
+        /* Punto (Nota) */
+        .dot { width: 15px; height: 15px; background: #222; border: 2px solid var(--madera); border-radius: 50%; z-index: 2; pointer-events: none; box-shadow: 1px 2px 4px rgba(0,0,0,0.4); position: relative; }
+        .dot.root { background: var(--exito); border: 2px solid #111; width: 17px; height: 17px; }
+
+        /* --- TOOLTIP MATEMÁTICO --- */
+        .dot[data-label] { pointer-events: auto; cursor: help; } 
+        .dot[data-label]:hover::after { content: attr(data-label); position: absolute; bottom: 140%; left: 50%; transform: translateX(-50%); background-color: var(--madera-oscura); color: white; padding: 3px 7px; border-radius: 4px; font-size: 12px; font-weight: bold; font-family: sans-serif; white-space: nowrap; z-index: 100; pointer-events: none; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .dot[data-label]:hover::before { content: ''; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); border-width: 4px; border-style: solid; border-color: var(--madera-oscura) transparent transparent transparent; z-index: 100; pointer-events: none; }
+
+        /* --- DIAPASÓN MINI (Para la hoja de impresión) --- */
+        .fretboard.mini { min-width: unset; width: fit-content; margin: 0 auto; padding: 5px 0 5px 5px; border-width: 2px; }
+        .fretboard.mini .fret-numbers { margin-left: 25px; margin-bottom: 3px; }
+        .fretboard.mini .fret-number { width: 28px; font-size: 11px; }
+        .fretboard.mini .string-row { height: 26px; }
+        .fretboard.mini .string-name { width: 20px; height: 18px; line-height: 18px; font-size: 10px; border-radius: 9px; margin-right: 5px; }
+        .fretboard.mini .fret { width: 28px; border-right-width: 2px; }
+        .fretboard.mini .fret.nut { width: 12px; border-right-width: 3px; }
+        .fretboard.mini .fret::before { height: 7px; background: linear-gradient(to bottom, #7A5C43 0px, #7A5C43 1px, transparent 1px, transparent 3px, #7A5C43 3px, #7A5C43 4px, transparent 4px, transparent 6px, #7A5C43 6px, #7A5C43 7px); }
+        .fretboard.mini .dot { width: 10px; height: 10px; border-width: 1px; box-shadow: none; pointer-events: auto; }
+        .fretboard.mini .dot.root { width: 12px; height: 12px; border-width: 2px; }
+
+        .cart-grid { display: grid; grid-template-columns: 1fr; gap: 25px; margin-top: 20px; }
+        @media (min-width: 800px) { .cart-grid { grid-template-columns: repeat(2, 1fr); } }
+        .cart-item { background: var(--caja-fondo); border: 1px solid var(--caja-borde); border-radius: 6px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); text-align: center; }
+        .cart-item h3 { margin-top: 0; margin-bottom: 5px; font-size: 16px; color: var(--primario); }
+
+        .empty-state { text-align: center; color: #7f8c8d; font-style: italic; margin-top: 30px; }
+        
+        #saved-list, #equiv-list { list-style: none; padding: 0; }
+        .saved-item { background: var(--caja-fondo); border: 1px solid var(--caja-borde); margin-bottom: 10px; padding: 15px; border-radius: 6px; }
+        .variant-list { list-style: none; padding-left: 20px; margin-top: 10px; }
+        .variant-item { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: 14px; }
+        
+        /* Modal de Ayuda */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: var(--caja-fondo); color: var(--texto); padding: 30px; border-radius: 8px; max-width: 600px; max-height: 80vh; overflow-y: auto; position: relative; border: 1px solid var(--caja-borde); }
+        .modal-close { position: absolute; top: 15px; right: 15px; background: transparent; color: var(--texto); font-size: 20px; border: none; cursor: pointer; }
+        .modal-content h3 { border-bottom: 1px solid var(--caja-borde); padding-bottom: 5px; margin-top: 25px; }
+
+        footer { text-align: center; padding: 20px; margin-top: auto; color: #7f8c8d; font-size: 14px; border-top: 1px solid var(--caja-borde); }
+
+        @media print {
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            body { background: white; color: black; margin: 0; padding: 0; }
+            .tabs, .controls-group, .subtitle, footer, .instructions, button, .no-print, .top-bar { display: none !important; }
+            .tab-content { box-shadow: none; padding: 0; display: none; border: none; }
+            #tab-hoja { display: block !important; }
+            @page { size: letter; margin: 1cm; }
+            #print-header { display: block !important; text-align: center; margin-bottom: 25px; }
+            #print-header h1 { font-size: 22px; margin-bottom: 5px; color: #5C4033; }
+            #print-header p { font-size: 12px; color: #7f8c8d; margin-top: 0; }
+            .cart-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 0; }
+            .cart-item { page-break-inside: avoid; box-shadow: none; border-color: #CCC; }
+            .cart-item h3 { font-size: 15px; margin-bottom: 8px; color: #000; }
+            .fretboard-container { overflow: visible !important; }
+            .dot::after, .dot::before { display: none !important; }
+            /* Forzar colores de madera al imprimir sin importar el tema */
+            .fretboard { background: #EAE0C8; border-color: #5C4033; }
+            .string-name { background: #5C4033; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar no-print">
+        <select id="theme-select" onchange="changeTheme()">
+            <option value="default">Madera Clara</option>
+            <option value="classic">Caoba Tradicional</option>
+            <option value="dark">Noche Acústica</option>
+        </select>
+        <button onclick="toggleHelp()" class="info" style="border-radius: 20px; padding: 6px 12px;">❓ Ayuda</button>
+    </div>
+
+    <h1 class="no-print">Diccionario Interactivo de Tiple</h1>
+    <div class="subtitle no-print">Jaime Jaramillo Arias</div>
+
+    <div class="tabs no-print">
+        <button class="tab-btn active" onclick="switchTab('usuario')">Modo Visualización</button>
+        <button class="tab-btn" onclick="switchTab('admin')">Gestor y Editor de Acordes</button>
+        <button class="tab-btn" onclick="switchTab('hoja')">
+            Hoja de Acordes <span class="badge" id="cart-count">0</span>
+        </button>
+    </div>
+
+    <div id="tab-usuario" class="tab-content active">
+        <h2>Consultar Acorde o Escala</h2>
+        <div class="controls-group">
+            <div class="controls-left">
+                <label><strong>Fundamental:</strong></label>
+                <select id="user-root" onchange="updateOptionsSelect()">
+                    <option value="C">C (Do)</option>
+                    <option value="C#">C# / Db</option>
+                    <option value="D">D (Re)</option>
+                    <option value="D#">D# / Eb</option>
+                    <option value="E">E (Mi)</option>
+                    <option value="F">F (Fa)</option>
+                    <option value="F#">F# / Gb</option>
+                    <option value="G">G (Sol)</option>
+                    <option value="G#">G# / Ab</option>
+                    <option value="A">A (La)</option>
+                    <option value="A#">A# / Bb</option>
+                    <option value="B">B (Si)</option>
+                </select>
+
+                <label><strong>Tipo:</strong></label>
+                <select id="user-type" onchange="updateOptionsSelect()"></select>
+
+                <label><strong>Digitación:</strong></label>
+                <select id="user-option" onchange="renderUserView()"></select>
+            </div>
+            <div class="controls-right">
+                <button class="success" onclick="addToCart()">+ Añadir a la Hoja</button>
+            </div>
+        </div>
+
+        <div id="user-comment" class="chord-comment"></div>
+        <div class="fretboard-container" id="user-fretboard-container"></div>
+        <p class="empty-state" id="user-empty-msg">El diccionario está vacío. Ve al "Gestor y Editor" para añadir o importar información.</p>
+    </div>
+
+    <div id="tab-admin" class="tab-content">
+        <h2>Constructor de Figuras</h2>
+        
+        <div class="instructions">
+            <strong>Dibujo Inteligente Activado:</strong><br>
+            • Haz un <strong>clic</strong> para poner o quitar una nota.<br>
+            • La app detectará y pintará automáticamente la <strong>Tónica de verde</strong>.<br>
+            • Pasa el ratón (hover) sobre cualquier nota para ver su <strong>Intervalo matemático</strong>.
+        </div>
+
+        <div class="controls-group">
+            <div class="controls-left">
+                <label><strong>Nota Base:</strong></label>
+                <select id="admin-root" onchange="renderAdminShape()">
+                    <option value="C">C (Do)</option>
+                    <option value="C#">C# / Db</option>
+                    <option value="D">D (Re)</option>
+                    <option value="D#">D# / Eb</option>
+                    <option value="E">E (Mi)</option>
+                    <option value="F">F (Fa)</option>
+                    <option value="F#">F# / Gb</option>
+                    <option value="G">G (Sol)</option>
+                    <option value="G#">G# / Ab</option>
+                    <option value="A">A (La)</option>
+                    <option value="A#">A# / Bb</option>
+                    <option value="B">B (Si)</option>
+                </select>
+
+                <label><strong>Nombre:</strong></label>
+                <input type="text" id="admin-name" placeholder="Ej. Mayor" style="width: 140px;">
+                
+                <label><strong>Comentario (Opc.):</strong></label>
+                <input type="text" id="admin-comment" placeholder="Ej. Ideal para bossa" style="width: 180px;">
+
+                <button id="btn-save" onclick="saveShape()">Guardar Figura</button>
+                <button id="btn-cancel-edit" onclick="cancelEdit()" class="danger" style="display:none;">Cancelar Edición</button>
+            </div>
+            <div class="controls-right">
+                <button class="ghost" onclick="clearAdminFretboard()">Limpiar Diapasón</button>
+            </div>
+        </div>
+
+        <div class="fretboard-container" id="admin-fretboard-container"></div>
+        
+        <hr style="margin: 40px 0; border: none; border-top: 1px solid var(--caja-borde);">
+
+        <h2>Gestor de Equivalencias Automáticas</h2>
+        <div class="instructions">
+            Crea reglas para generar miles de acordes sin tener que dibujarlos. <br>
+            Por ejemplo: <em>Si toco un <strong>C 6</strong>, es equivalente a tocar un <strong>A m7</strong></em>. Al guardar esto, todas las figuras de 6 se copiarán como m7 transpuestas automáticamente.
+        </div>
+        
+        <div class="controls-group">
+            <div class="controls-left">
+                <label>Si toco un <strong>C</strong> +</label>
+                <select id="equiv-source" style="width: 120px;"></select>
+                
+                <label>equivale a un</label>
+                <select id="equiv-target-note">
+                    <option value="C">C</option><option value="C#">C#</option><option value="D">D</option>
+                    <option value="D#">D#</option><option value="E">E</option><option value="F">F</option>
+                    <option value="F#">F#</option><option value="G">G</option><option value="G#">G#</option>
+                    <option value="A" selected>A</option><option value="A#">A#</option><option value="B">B</option>
+                </select>
+                <input type="text" id="equiv-target-name" placeholder="Ej. m7" style="width: 100px;">
+                
+                <button onclick="addEquivalency()" class="success">Añadir Regla</button>
+            </div>
+        </div>
+        <ul id="equiv-list"></ul>
+
+        <hr style="margin: 40px 0; border: none; border-top: 1px solid var(--caja-borde);">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+            <h2 style="margin: 0;">Diccionario Almacenado</h2>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="exportJSON()" class="info">Exportar a .json</button>
+                <label for="import-file" class="btn-label" style="background:#7f8c8d;">Importar .json</label>
+                <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(event)">
+            </div>
+        </div>
+        
+        <ul id="saved-list"></ul>
+    </div>
+
+    <div id="tab-hoja" class="tab-content">
+        <div id="print-header" style="display:none;">
+            <h1>Hoja de Acordes - Tiple Colombiano</h1>
+            <p>Jaime Jaramillo Arias</p>
+        </div>
+
+        <div class="controls-group no-print">
+            <div class="controls-left">
+                <h2 style="margin:0;">Tu Hoja de Estudio</h2>
+            </div>
+            <div class="controls-right">
+                <button class="danger" onclick="clearCart()">Vaciar Hoja</button>
+                <button class="success" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+            </div>
+        </div>
+        
+        <div class="instructions no-print">
+            <strong>Tip para el PDF:</strong> Al hacer clic en imprimir, en la ventana de tu navegador elige <strong>"Guardar como PDF"</strong>. Asegúrate de activar <strong>"Gráficos de fondo"</strong>. (Los intervalos se ocultarán para no estorbar en la impresión).
+        </div>
+
+        <div id="cart-grid" class="cart-grid">
+            <p class="empty-state">No has añadido ningún acorde. Ve a "Modo Visualización" y usa el botón verde para armar tu hoja de estudio.</p>
+        </div>
+    </div>
+
+    <footer>
+        Desarrollado por <strong>Jaime Jaramillo Arias</strong>.<br>
+        para el estudio del Tiple Colombiano.
+    </footer>
+
+    <div id="help-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="toggleHelp()">✖</button>
+            <h2 style="margin-top: 0;">📖 Cómo usar el Diccionario</h2>
+            
+            <h3>Modo Visualización</h3>
+            <p>Selecciona la fundamental (ej. C, D, F#) y el tipo de acorde que buscas. El motor matemático calculará automáticamente la mejor posición en el diapasón. Usa el botón verde para añadir la figura a tu hoja de estudio.</p>
+            
+            <h3>Gestor y Editor</h3>
+            <p>Haz clic en las cuerdas para dibujar tus propias figuras o escalas. ¡No importa la nota, dibújalas siempre pensando que la fundamental es <strong>C (Do)</strong>! La aplicación se encargará de transponer tu dibujo a todos los demás tonos.</p>
+            
+            <h3>Equivalencias Automáticas</h3>
+            <p>La música está llena de simetrías. Si sabes que un acorde comparte las mismas notas que otro (ej. C6 = Am7), puedes crear una "Regla de Equivalencia" en la pestaña de Editor. El motor tomará todos los dibujos de tu origen, ajustará la matemática y creará las posiciones del nuevo acorde automáticamente.</p>
+            
+            <h3>Hoja de Acordes</h3>
+            <p>Aquí se agrupan todos los acordes que añadiste. Al presionar "Imprimir", el sistema oculta los colores oscuros de la app y genera una plantilla limpia en blanco y negro perfecta para estudiar o llevar a clase.</p>
+        </div>
+    </div>
+
+    <script>
+        // --- CONSTANTES DE TEORÍA MUSICAL ---
+        const CHROMATIC = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        const STRINGS = [{ id: 1, name: 'E', pitch: 4 }, { id: 2, name: 'B', pitch: 11 }, { id: 3, name: 'G', pitch: 7 }, { id: 4, name: 'D', pitch: 2 }];
+        const INTERVALOS = ["Tónica", "b9 / 2m", "9 / 2M", "3m / #9", "3M", "11 / 4j", "#11 / b5", "5j", "#5 / b13", "13 / 6M", "7m", "maj7"];
+        const NUM_FRETS = 15; 
+
+        // --- MANEJO DE TEMAS ---
+        function changeTheme() {
+            const theme = document.getElementById('theme-select').value;
+            document.body.setAttribute('data-theme', theme);
+            localStorage.setItem('tipleTheme', theme);
+        }
+
+        function toggleHelp() {
+            const modal = document.getElementById('help-modal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // --- BASE DE DATOS INCRUSTADA ---
+        const baseDictionary = [
+          {"id":1775007955404,"name":"(mayor)","root":"C","comment":"","shapes":[{"1":[0],"2":[1],"3":[0],"4":[2]},{"1":[3],"2":[1],"3":[0],"4":[2]},{"1":[3],"2":[5],"3":[5],"4":[5]},{"1":[8],"2":[5],"3":[5],"4":[5]},{"1":[8],"2":[8],"3":[9],"4":[10]},{"1":[12],"2":[13],"3":[12],"4":[10]}]},
+          {"id":1775008017015,"name":"m","root":"C","comment":"","shapes":[{"1":[3],"2":[1],"3":[0],"4":[1]},{"1":[3],"2":[4],"3":[5],"4":[5]},{"1":[8],"2":[8],"3":[8],"4":[5]},{"1":[8],"2":[8],"3":[8],"4":[10]},{"1":[11],"2":[13],"3":[12],"4":[10]}]},
+          {"id":1775008082607,"name":"+","root":"C","comment":"","shapes":[{"1":[4],"2":[1],"3":[1],"4":[2]},{"1":[4],"2":[5],"3":[5],"4":[2]},{"1":[4],"2":[5],"3":[5],"4":[6]},{"1":[8],"2":[5],"3":[5],"4":[6]},{"1":[8],"2":[9],"3":[9],"4":[6]},{"1":[8],"2":[9],"3":[9],"4":[10]},{"1":[12],"2":[9],"3":[9],"4":[10]},{"1":[12],"2":[13],"3":[13],"4":[10]}]},
+          {"id":1775008171159,"name":"dim","root":"C","comment":"","shapes":[{"1":[2],"2":[4],"3":[5],"4":[4]},{"1":[8],"2":[4],"3":[5],"4":[4]},{"1":[8],"2":[7],"3":[8],"4":[10]},{"1":[11],"2":[13],"3":[11],"4":[10]}]},
+          {"id":1775008231360,"name":"sus4","root":"C","comment":"","shapes":[{"1":[1],"2":[1],"3":[0],"4":[3]},{"1":[3],"2":[1],"3":[0],"4":[3]},{"1":[3],"2":[6],"3":[5],"4":[3]},{"1":[3],"2":[6],"3":[5],"4":[5]},{"1":[8],"2":[6],"3":[5],"4":[5]},{"1":[8],"2":[8],"3":[10],"4":[10]},{"1":[13],"2":[13],"3":[10],"4":[10]}]},
+          {"id":1775008290497,"name":"sus2","root":"C","comment":"","shapes":[{"1":[3],"2":[1],"3":[0],"4":[0]},{"1":[3],"2":[3],"3":[5],"4":[5]},{"1":[8],"2":[8],"3":[7],"4":[10]},{"1":[10],"2":[13],"3":[12],"4":[10]}]},
+          {"id":1775008343927,"name":"(b5)","root":"C","comment":"","shapes":[{"1":[2],"2":[5],"3":[5],"4":[4]},{"1":[8],"2":[5],"3":[5],"4":[4]},{"1":[8],"2":[7],"3":[9],"4":[10]},{"1":[12],"2":[13],"3":[11],"4":[10]}]},
+          {"id":1775008425823,"name":"6","root":"C","comment":"Los acordes 6 son inversión de un m7 desde la 6M","shapes":[{"1":[3],"2":[1],"3":[2],"4":[2]},{"1":[5],"2":[5],"3":[5],"4":[5]},{"1":[8],"2":[8],"3":[9],"4":[7]},{"1":[12],"2":[10],"3":[12],"4":[10]}]},
+          {"id":1775008513144,"name":"m6","root":"C","comment":"Los acordes m6 son acordes m7(b5) desde la 6M","shapes":[{"1":[3],"2":[1],"3":[2],"4":[1]},{"1":[5],"2":[4],"3":[5],"4":[5]},{"1":[8],"2":[8],"3":[8],"4":[7]},{"1":[8],"2":[10],"3":[8],"4":[10]},{"1":[11],"2":[10],"3":[12],"4":[10]}]},
+          {"id":1775008612338,"name":"°7","root":"C","comment":"","shapes":[{"1":[2],"2":[1],"3":[2],"4":[1]},{"1":[5],"2":[4],"3":[5],"4":[4]},{"1":[8],"2":[7],"3":[8],"4":[7]},{"1":[11],"2":[10],"3":[11],"4":[10]}]},
+          {"id":1775008739274,"name":"7","root":"C","comment":"","shapes":[{"1":[3],"2":[1],"3":[3],"4":[2]},{"1":[6],"2":[5],"3":[5],"4":[5]},{"1":[8],"2":[8],"3":[9],"4":[8]},{"1":[12],"2":[11],"3":[12],"4":[10]}]},
+          {"id":1775008792380,"name":"m7","root":"C","comment":"","shapes":[{"1":[3],"2":[1],"3":[3],"4":[1]},{"1":[6],"2":[4],"3":[5],"4":[5]},{"1":[8],"2":[8],"3":[8],"4":[8]},{"1":[11],"2":[11],"3":[12],"4":[10]}]},
+          {"id":1775008831147,"name":"+7","root":"C","comment":"","shapes":[{"1":[4],"2":[1],"3":[3],"4":[2]},{"1":[6],"2":[5],"3":[5],"4":[6]},{"1":[8],"2":[9],"3":[9],"4":[8]},{"1":[12],"2":[11],"3":[13],"4":[10]}]},
+          {"id":1775008887726,"name":"m7(b5)","root":"C","comment":"","shapes":[{"1":[2],"2":[1],"3":[3],"4":[1]},{"1":[6],"2":[4],"3":[5],"4":[4]},{"1":[8],"2":[7],"3":[8],"4":[8]},{"1":[11],"2":[11],"3":[11],"4":[10]}]},
+          {"id":1775008933327,"name":"7sus4","root":"C","comment":"","shapes":[{"1":[3],"2":[1],"3":[3],"4":[3]},{"1":[6],"2":[6],"3":[5],"4":[5]},{"1":[8],"2":[8],"3":[10],"4":[8]},{"1":[8],"2":[11],"3":[10],"4":[10]},{"1":[13],"2":[11],"3":[10],"4":[10]},{"1":[13],"2":[11],"3":[12],"4":[10]}]},
+          {"id":1775008987814,"name":"7sus2","root":"C","comment":"","shapes":[{"1":[3],"2":[1],"3":[3],"4":[0]},{"1":[3],"2":[1],"3":[3],"4":[3]},{"1":[6],"2":[3],"3":[5],"4":[5]},{"1":[8],"2":[8],"3":[7],"4":[8]},{"1":[10],"2":[11],"3":[12],"4":[10]}]},
+          {"id":1775009142635,"name":"maj7","root":"C","comment":"El acorde maj7 puede reemplazarse por un m desde la 3M","shapes":[{"1":[3],"2":[1],"3":[4],"4":[2]},{"1":[7],"2":[5],"3":[5],"4":[5]},{"1":[7],"2":[8],"3":[9],"4":[10]},{"1":[12],"2":[12],"3":[12],"4":[10]}]},
+          {"id":1775009222635,"name":"m(maj7)","root":"C","comment":"El acorde m(maj7) puede reemplazarse por un acorde + desde la 3m.","shapes":[{"1":[3],"2":[1],"3":[4],"4":[1]},{"1":[7],"2":[4],"3":[5],"4":[5]},{"1":[7],"2":[8],"3":[8],"4":[10]},{"1":[11],"2":[12],"3":[12],"4":[10]}]},
+          {"id":1775009438191,"name":"+maj7","root":"C","comment":"","shapes":[{"1":[4],"2":[1],"3":[4],"4":[2]},{"1":[7],"2":[5],"3":[5],"4":[6]},{"1":[7],"2":[9],"3":[9],"4":[10]},{"1":[12],"2":[12],"3":[13],"4":[10]}]},
+          {"id":1775009525850,"name":"∆sus4","root":"C","comment":"","shapes":[{"1":[3],"2":[1],"3":[4],"4":[3]},{"1":[7],"2":[6],"3":[5],"4":[5]},{"1":[7],"2":[8],"3":[10],"4":[10]},{"1":[13],"2":[12],"3":[12],"4":[10]}]},
+          {"id":1775009560784,"name":"∆sus2","root":"C","comment":"","shapes":[{"1":[3],"2":[1],"3":[4],"4":[0]},{"1":[7],"2":[3],"3":[5],"4":[5]},{"1":[7],"2":[8],"3":[7],"4":[10]},{"1":[10],"2":[12],"3":[12],"4":[10]}]},
+          {"id":1775009674699,"name":"7(b5)","root":"C","comment":"","shapes":[{"1":[2],"2":[1],"3":[3],"4":[2]},{"1":[6],"2":[5],"3":[5],"4":[4]},{"1":[8],"2":[7],"3":[9],"4":[8]},{"1":[12],"2":[11],"3":[11],"4":[10]}]},
+          {"id":1775009717163,"name":"maj7(b5)","root":"C","comment":"","shapes":[{"1":[2],"2":[1],"3":[4],"4":[2]},{"1":[7],"2":[5],"3":[5],"4":[4]},{"1":[7],"2":[7],"3":[9],"4":[10]},{"1":[12],"2":[12],"3":[11],"4":[10]}]},
+          {"id":1775009864813,"name":"°maj7","root":"C","comment":"","shapes":[{"1":[2],"2":[1],"3":[4],"4":[1]},{"1":[7],"2":[4],"3":[5],"4":[4]},{"1":[11],"2":[12],"3":[11],"4":[10]}]},
+          {"id":1775010017127,"name":"6(9)","root":"C","comment":"Es = a un 7sus4 desde la 6M","shapes":[{"1":[3],"2":[3,1],"3":[2],"4":[2]},{"1":[10],"2":[1,8],"3":[9],"4":[7]},{"1":[10],"2":[1,10],"3":[9],"4":[10]}]},
+          {"id":1775010222571,"name":"m6(9)","root":"C","comment":"","shapes":[{"1":[3],"2":[1,3],"3":[2],"4":[1]},{"1":[3],"2":[1,3],"3":[2],"4":[1]},{"1":[5],"2":[1,4],"3":[7],"4":[5]},{"1":[10],"2":[1,8],"3":[8],"4":[7]},{"1":[10],"2":[1,10],"3":[12],"4":[13]}]},
+          {"id":1775010322273,"name":"+9","root":"C","comment":"","shapes":[{"1":[4],"2":[1,3],"3":[3],"4":[2]},{"1":[6],"2":[1,5],"3":[7],"4":[6]},{"1":[10],"2":[1,9],"3":[9],"4":[8]},{"1":[10],"2":[1,11],"3":[13],"4":[10]}]},
+          {"id":1775010524633,"name":"+∆(9)","root":"C","comment":"Es = a un acorde 7 desde la 3M","shapes":[{"1":[4],"2":[1,3],"3":[4],"4":[2]},{"1":[4],"2":[1,3],"3":[4],"4":[2]},{"1":[7],"2":[1,5],"3":[7],"4":[6]},{"1":[10],"2":[1,9],"3":[9],"4":[9]},{"1":[12],"2":[1,12],"3":[13],"4":[12]}]},
+          {"id":1775010698756,"name":"°∆9","root":"C","comment":"= 7 desde la 7M","shapes":[{"1":[2],"2":[1,0],"3":[2],"4":[1]},{"1":[5],"2":[1,4],"3":[4],"4":[4]},{"1":[7],"2":[1,7],"3":[8],"4":[7]},{"1":[11],"2":[1,10],"3":[11],"4":[9]}]},
+          {"id":1775010768843,"name":"sus9","root":"C","comment":"= m7 desde la 5j","shapes":[{"1":[3],"2":[1,3],"3":[3],"4":[3]},{"1":[6],"2":[1,6],"3":[7],"4":[5]},{"1":[10],"2":[1,8],"3":[10],"4":[8]},{"1":[13],"2":[1,11],"3":[12],"4":[12]}]},
+          {"id":1775010873002,"name":"∆sus9","root":"C","comment":"= 7 desde 5j","shapes":[{"1":[3],"2":[1,3],"3":[4],"4":[3]},{"1":[3],"2":[1,3],"3":[4],"4":[3]},{"1":[1],"2":[1,0],"3":[0],"4":[0]},{"1":[7],"2":[1,6],"3":[7],"4":[5]},{"1":[10],"2":[1,8],"3":[10],"4":[9]}]},
+          {"id":1775010963359,"name":"9(b5)","root":"C","comment":"= +7 desde la 5b","shapes":[{"1":[2],"2":[1,3],"3":[3],"4":[2]},{"1":[6],"2":[1,5],"3":[7],"4":[4]},{"1":[10],"2":[1,7],"3":[9],"4":[8]},{"1":[10],"2":[1,7],"3":[9],"4":[8]},{"1":[12],"2":[1,11],"3":[11],"4":[12]}]},
+          {"id":1775011147016,"name":"∆9(b5)","root":"C","comment":"= 7sus2 desde 3M","shapes":[{"1":[2],"2":[1,3],"3":[4],"4":[2]},{"1":[7],"2":[1,5],"3":[7],"4":[4]},{"1":[10],"2":[1,7],"3":[9],"4":[9]},{"1":[12],"2":[1,12],"3":[11],"4":[12]}]}
+        ];
+
+        // Reglas de equivalencia por defecto
+        const defaultDerivations = [
+            { id: "d1", source: "(b5)", note: "D", target: "9" },
+            { id: "d2", source: "°maj7", note: "D", target: "13(b9)" },
+            { id: "d3", source: "°7", note: "D", target: "7(b9)" },
+            { id: "d4", source: "∆9(b5)", note: "D", target: "13" },
+            { id: "d5", source: "6", note: "A", target: "m7" },
+            { id: "d6", source: "6(9)", note: "A", target: "m11" },
+            { id: "d7", source: "m6", note: "A", target: "m7(b5)" },
+            { id: "d8", source: "m(maj7)", note: "F", target: "13(#11)" },
+            { id: "d9", source: "m(maj7)", note: "A", target: "m7(b5)9" },
+            { id: "d10", source: "maj7", note: "A", target: "m9" },
+            { id: "d11", source: "maj7(b5)", note: "A", target: "m6(9)" },
+            { id: "d12", source: "maj7(b5)", note: "G#", target: "7alt" },
+            { id: "d13", source: "sus9", note: "G", target: "m11" }
+        ];
+
+        let rules = JSON.parse(localStorage.getItem('tipleDerivations'));
+        if (!rules || rules.length === 0) rules = defaultDerivations;
+
+        // Estado Global
+        let storedDict = JSON.parse(localStorage.getItem('tipleDict'));
+        let rawDict = (storedDict && storedDict.length > 0) ? cleanDerivedShapes(storedDict) : JSON.parse(JSON.stringify(baseDictionary));
+        let dictionary = []; // Se llena en reGenerateDictionary()
+        
+        let adminShape = { 1: [], 2: [], 3: [], 4: [] };
+        let editingData = { id: null, variantIndex: null };
+        let cart = []; 
+
+        // --- SISTEMA DE LIMPIEZA Y GENERACIÓN ---
+        function cleanDerivedShapes(dictToClean) {
+            let cleaned = JSON.parse(JSON.stringify(dictToClean));
+            cleaned.forEach(c => { c.shapes = c.shapes.filter(s => !s.isDerived); });
+            return cleaned.filter(c => c.shapes.length > 0);
+        }
+
+        function reGenerateDictionary() {
+            let dict = JSON.parse(JSON.stringify(rawDict));
+            
+            function transposeShape(shape, distance) {
+                let newShape = { 1: [], 2: [], 3: [], 4: [], isDerived: true };
+                let hasC = false;
+                let allFrets = [];
+                const cFrets = { 1: [8, 20], 2: [1, 13], 3: [5, 17], 4: [10, 22] };
+                
+                let minFret = 999;
+                for (let string in shape) {
+                    if (string === 'isDerived') continue;
+                    let frets = shape[string];
+                    let actualFrets = frets.length > 1 ? frets.filter(f => !cFrets[string].includes(f)) : frets;
+                    for (let f of actualFrets) {
+                        let nf = f + distance;
+                        if (nf < minFret) minFret = nf;
+                    }
+                }
+                
+                let octShift = minFret < 0 ? 12 : 0;
+                let valid = true;
+                
+                for (let string in shape) {
+                    if (string === 'isDerived') continue;
+                    let frets = shape[string];
+                    let actualFrets = frets.length > 1 ? frets.filter(f => !cFrets[string].includes(f)) : frets;
+                    for (let f of actualFrets) {
+                        let newFret = f + distance + octShift;
+                        if (newFret < 0 || newFret > 15) valid = false;
+                        newShape[string].push(newFret);
+                        allFrets.push({string: parseInt(string), fret: newFret});
+                        if (cFrets[string].includes(newFret)) hasC = true;
+                    }
+                }
+                
+                if (!valid || allFrets.length < 3) return null;
+                
+                if (!hasC) {
+                    let fMin = Math.min(...allFrets.map(n => n.fret));
+                    let fMax = Math.max(...allFrets.map(n => n.fret));
+                    let bestC = null, minDiff = 999;
+                    for (let s in cFrets) {
+                        cFrets[s].forEach(cf => {
+                            if (cf > 15) return;
+                            let diff = Math.min(Math.abs(cf - fMin), Math.abs(cf - fMax));
+                            if (diff < minDiff) { minDiff = diff; bestC = { string: s, fret: cf }; }
+                        });
+                    }
+                    if (bestC) {
+                        newShape[bestC.string].push(bestC.fret);
+                        newShape[bestC.string].sort((a,b) => a - b);
+                    }
+                }
+                return newShape;
+            }
+
+            rules.forEach(rule => {
+                let sourceChord = dict.find(c => c.name === rule.source && c.root === "C");
+                if (!sourceChord) return;
+
+                let targetChord = dict.find(c => c.name === rule.target && c.root === "C");
+                if (!targetChord) {
+                    targetChord = { id: Date.now() + Math.floor(Math.random()*10000), name: rule.target, root: "C", comment: `Generado equivalente de ${rule.source}`, shapes: [] };
+                    dict.push(targetChord);
+                }
+
+                let distance = (12 - CHROMATIC.indexOf(rule.note)) % 12;
+
+                sourceChord.shapes.forEach(shape => {
+                    if (shape.isDerived) return; 
+                    let newShape = transposeShape(shape, distance);
+                    if (newShape) {
+                        let isDuplicate = targetChord.shapes.some(existing => 
+                            JSON.stringify(existing[1]) === JSON.stringify(newShape[1]) && JSON.stringify(existing[2]) === JSON.stringify(newShape[2])
+                        );
+                        if (!isDuplicate) targetChord.shapes.push(newShape);
+                    }
+                });
+            });
+            
+            dictionary = dict;
+            localStorage.setItem('tipleDict', JSON.stringify(dictionary));
+        }
+
+        // --- GESTIÓN DE REGLAS DE EQUIVALENCIA ---
+        function renderEquivalencies() {
+            const list = document.getElementById('equiv-list');
+            list.innerHTML = '';
+            rules.forEach(rule => {
+                const li = document.createElement('li');
+                li.className = 'saved-item';
+                li.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Si toco un <strong>C ${rule.source}</strong>, genera automáticamente un <strong>${rule.note} ${rule.target}</strong></span>
+                        <button class="danger small" onclick="deleteEquivalency('${rule.id}')">Eliminar Regla</button>
+                    </div>
+                `;
+                list.appendChild(li);
+            });
+
+            const sourceSelect = document.getElementById('equiv-source');
+            sourceSelect.innerHTML = '';
+            const rawNames = [...new Set(rawDict.map(d => d.name))].sort();
+            rawNames.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name; opt.textContent = name;
+                sourceSelect.appendChild(opt);
+            });
+        }
+
+        function addEquivalency() {
+            const source = document.getElementById('equiv-source').value;
+            const note = document.getElementById('equiv-target-note').value;
+            const target = document.getElementById('equiv-target-name').value.trim();
+            
+            if (!target) return alert('Debes escribir el nombre del acorde equivalente (Ej. m7)');
+            
+            rules.push({ id: 'd' + Date.now(), source, note, target });
+            localStorage.setItem('tipleDerivations', JSON.stringify(rules));
+            
+            document.getElementById('equiv-target-name').value = '';
+            
+            reGenerateDictionary();
+            renderEquivalencies();
+            renderSavedList();
+            updateUserSelect();
+            alert("Regla añadida y diccionario actualizado.");
+        }
+
+        function deleteEquivalency(id) {
+            rules = rules.filter(r => r.id !== id);
+            localStorage.setItem('tipleDerivations', JSON.stringify(rules));
+            reGenerateDictionary();
+            renderEquivalencies();
+            renderSavedList();
+            updateUserSelect();
+        }
+
+
+        // --- INICIALIZACIÓN ---
+        window.onload = () => {
+            const savedTheme = localStorage.getItem('tipleTheme') || 'default';
+            document.body.setAttribute('data-theme', savedTheme);
+            document.getElementById('theme-select').value = savedTheme;
+
+            reGenerateDictionary();
+            buildFretboardDOM(document.getElementById('admin-fretboard-container'), true, false, 0, NUM_FRETS);
+            buildFretboardDOM(document.getElementById('user-fretboard-container'), false, false, 0, NUM_FRETS);
+            updateUserSelect();
+            renderEquivalencies();
+            renderSavedList();
+        };
+
+        // --- INTERFAZ BÁSICA ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            const btn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+            if(btn) btn.classList.add('active');
+            if(tabId === 'usuario') { updateUserSelect(); if(editingData.id !== null) cancelEdit(); }
+        }
+
+        function buildFretboardDOM(containerElement, isInteractive, isMini, startFret = 0, endFret = NUM_FRETS) {
+            containerElement.innerHTML = ''; 
+            const board = document.createElement('div');
+            board.className = 'fretboard' + (isMini ? ' mini' : '');
+            
+            const numRow = document.createElement('div');
+            numRow.className = 'fret-numbers';
+            for (let i = startFret; i <= endFret; i++) {
+                const num = document.createElement('div');
+                num.className = 'fret-number';
+                num.textContent = i === 0 ? '0' : i;
+                if(i === 0) num.style.width = isMini ? '12px' : '25px';
+                numRow.appendChild(num);
+            }
+            board.appendChild(numRow);
+
+            STRINGS.forEach(str => {
+                const row = document.createElement('div'); row.className = 'string-row';
+                const label = document.createElement('div'); label.className = 'string-name'; label.textContent = str.name;
+                row.appendChild(label);
+
+                for (let i = startFret; i <= endFret; i++) {
+                    const fret = document.createElement('div');
+                    fret.className = `fret ${i === 0 ? 'nut' : ''} ${isInteractive ? 'interactive' : ''}`;
+                    fret.dataset.string = str.id; fret.dataset.fret = i;
+                    if (isInteractive) fret.onclick = () => toggleAdminDot(str.id, i);
+                    row.appendChild(fret);
+                }
+                board.appendChild(row);
+            });
+            containerElement.appendChild(board); return board;
+        }
+
+        function getInterval(stringId, fret, rootNoteStr) {
+            const rootPitch = CHROMATIC.indexOf(rootNoteStr);
+            const stringPitch = STRINGS.find(s => s.id == stringId).pitch;
+            const distance = ((stringPitch + fret) % 12 - rootPitch + 12) % 12;
+            return { distance, label: INTERVALOS[distance] };
+        }
+
+        // --- LÓGICA DE GRABACIÓN (ADMIN) ---
+        function toggleAdminDot(stringId, fretIndex) {
+            const arr = adminShape[stringId];
+            const idx = arr.findIndex(note => (typeof note === 'object' ? note.fret : note) === fretIndex);
+            if (idx > -1) arr.splice(idx, 1); else arr.push({ fret: fretIndex });
+            renderAdminShape(); 
+        }
+
+        function clearAdminFretboard() {
+            adminShape = { 1: [], 2: [], 3: [], 4: [] }; renderAdminShape(); document.getElementById('admin-comment').value = '';
+        }
+
+        function renderAdminShape() {
+            document.querySelectorAll('#admin-fretboard-container .dot').forEach(d => d.remove());
+            const container = document.getElementById('admin-fretboard-container');
+            const currentRoot = document.getElementById('admin-root').value;
+            
+            for (const [stringId, notes] of Object.entries(adminShape)) {
+                notes.forEach(note => {
+                    const fretValue = typeof note === 'object' ? note.fret : note;
+                    const fretDiv = container.querySelector(`.fret[data-string="${stringId}"][data-fret="${fretValue}"]`);
+                    if(fretDiv) {
+                        const intervalInfo = getInterval(stringId, fretValue, currentRoot);
+                        const dot = document.createElement('div');
+                        dot.className = intervalInfo.distance === 0 ? 'dot root' : 'dot';
+                        dot.dataset.label = intervalInfo.label;
+                        fretDiv.appendChild(dot);
+                    }
+                });
+            }
+        }
+
+        function cancelEdit() {
+            editingData = { id: null, variantIndex: null };
+            document.getElementById('btn-save').textContent = "Guardar Figura";
+            document.getElementById('btn-cancel-edit').style.display = "none";
+            document.getElementById('admin-name').value = '';
+            document.getElementById('admin-name').disabled = false;
+            clearAdminFretboard();
+        }
+
+        function saveShape() {
+            const name = document.getElementById('admin-name').value.trim();
+            const root = document.getElementById('admin-root').value;
+            const comment = document.getElementById('admin-comment').value.trim();
+            
+            if (!name) return alert('Por favor ingresa un nombre para la figura.');
+            
+            let hasPoints = false;
+            for (let s in adminShape) if (adminShape[s].length > 0) hasPoints = true;
+            if (!hasPoints) return alert('Dibuja al menos una nota en el diapasón.');
+
+            let shapeToSave = { 1: [], 2: [], 3: [], 4: [] };
+            for (let s in adminShape) shapeToSave[s] = adminShape[s].map(note => typeof note === 'object' ? note.fret : note);
+            
+            if (editingData.id !== null) {
+                const item = rawDict.find(d => d.id === editingData.id);
+                if (item) { item.root = root; item.comment = comment; item.shapes[editingData.variantIndex] = shapeToSave; }
+                cancelEdit();
+            } else {
+                let existingItem = rawDict.find(d => d.name.toLowerCase() === name.toLowerCase());
+                if (existingItem) {
+                    if (existingItem.root !== root) return alert(`La figura "${existingItem.name}" ya existe y usa "${existingItem.root}" como base.`);
+                    existingItem.shapes.push(shapeToSave);
+                    if (comment) existingItem.comment = comment; 
+                } else {
+                    rawDict.push({ id: Date.now(), name, root, comment, shapes: [shapeToSave] });
+                }
+            }
+
+            // Reprocesar todo el ciclo
+            reGenerateDictionary();
+            renderEquivalencies(); // Actualiza los dropdowns
+            renderSavedList();
+        }
+
+        function deleteVariant(id, index) {
+            if(!confirm("¿Borrar esta variante específica?")) return;
+            const item = rawDict.find(d => d.id === id);
+            item.shapes.splice(index, 1);
+            if (item.shapes.length === 0) rawDict = rawDict.filter(d => d.id !== id);
+            if(editingData.id === id && editingData.variantIndex === index) cancelEdit();
+            reGenerateDictionary(); renderSavedList(); renderEquivalencies();
+        }
+
+        function deleteShape(id) {
+            if(!confirm("¿Estás seguro de que deseas borrar este acorde y TODAS sus variantes?")) return;
+            rawDict = rawDict.filter(d => d.id !== id);
+            if(editingData.id === id) cancelEdit();
+            reGenerateDictionary(); renderSavedList(); renderEquivalencies();
+        }
+
+        function renderSavedList() {
+            const ul = document.getElementById('saved-list'); ul.innerHTML = '';
+            if(rawDict.length === 0) { ul.innerHTML = '<p class="empty-state">No hay figuras dibujadas manualmente.</p>'; return; }
+            const sortedDict = [...rawDict].sort((a, b) => a.name.localeCompare(b.name));
+
+            sortedDict.forEach(item => {
+                const li = document.createElement('li'); li.className = 'saved-item';
+                let commentHtml = item.comment ? `<div style="font-size:12px; color:#856404; font-style:italic; margin-top:3px;">📝 ${item.comment}</div>` : '';
+                let html = `<div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+                        <div><strong style="font-size: 16px;">${item.name} <span style="font-weight:normal; color:#7f8c8d;">(Base molde: ${item.root})</span></strong>${commentHtml}</div>
+                        <div><button onclick="deleteShape(${item.id})" class="danger small">Borrar Todo</button></div></div>`;
+                
+                let variantsHtml = '<ul class="variant-list">';
+                item.shapes.forEach((shape, index) => {
+                    variantsHtml += `<li class="variant-item"><span style="width: 80px;">Opción ${index + 1}</span>
+                            <button onclick="deleteVariant(${item.id}, ${index})" class="danger small">Quitar</button></li>`;
+                });
+                variantsHtml += '</ul>';
+                li.innerHTML = html + variantsHtml; ul.appendChild(li);
+            });
+        }
+
+        // --- IMPORTAR / EXPORTAR ---
+        function exportJSON() {
+            if(rawDict.length === 0) return alert("El diccionario manual está vacío.");
+            const dataStr = JSON.stringify(rawDict, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = "Diccionario_Tiple_Base.json"; a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importJSON(event) {
+            const file = event.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = cleanDerivedShapes(JSON.parse(e.target.result));
+                    if (Array.isArray(importedData)) {
+                        if(confirm("¿Deseas REEMPLAZAR tu diccionario actual con este archivo? \nDale a 'Aceptar' para reemplazar todo, o 'Cancelar' para COMBINAR.")) {
+                            rawDict = importedData;
+                        } else { rawDict = rawDict.concat(importedData); }
+                        reGenerateDictionary(); renderSavedList(); renderEquivalencies();
+                        alert("Diccionario importado y procesado exitosamente.");
+                    }
+                } catch (err) { alert("Error al leer el archivo JSON."); }
+            };
+            reader.readAsText(file); event.target.value = ''; 
+        }
+
+        // --- LÓGICA DE USUARIO Y TRANSPOSICIÓN ---
+        function updateUserSelect() {
+            const select = document.getElementById('user-type');
+            const emptyMsg = document.getElementById('user-empty-msg');
+            const fbContainer = document.getElementById('user-fretboard-container');
+            const commentDiv = document.getElementById('user-comment');
+            
+            select.innerHTML = '';
+            if (dictionary.length === 0) {
+                emptyMsg.style.display = 'block'; fbContainer.style.display = 'none'; commentDiv.style.display = 'none';
+                document.getElementById('user-option').innerHTML = ''; return;
+            }
+            emptyMsg.style.display = 'none'; fbContainer.style.display = 'block';
+            const sortedDict = [...dictionary].sort((a, b) => a.name.localeCompare(b.name));
+            sortedDict.forEach(item => {
+                const opt = document.createElement('option'); opt.value = item.id; opt.textContent = item.name; select.appendChild(opt);
+            });
+            updateOptionsSelect();
+        }
+
+        function updateOptionsSelect() {
+            const typeSelectId = document.getElementById('user-type').value;
+            const optSelect = document.getElementById('user-option');
+            const targetRoot = document.getElementById('user-root').value;
+            optSelect.innerHTML = '';
+            const item = dictionary.find(d => d.id == typeSelectId);
+            
+            if (item) {
+                const distance = (CHROMATIC.indexOf(targetRoot) - CHROMATIC.indexOf(item.root) + 12) % 12;
+                let sortedShapes = item.shapes.map((shape, index) => {
+                    let minFret = 999;
+                    for (let s in shape) { if(s === 'isDerived') continue; shape[s].forEach(f => { if(f+distance < minFret) minFret=f+distance; }); }
+                    let curDist = distance; if (minFret >= 12) curDist -= 12;
+                    let pMin = 999, sum = 0, count = 0;
+                    for (let s in shape) { if(s === 'isDerived') continue; shape[s].forEach(f => { let finalF = f+curDist; if(finalF>0 && finalF<pMin) pMin=finalF; sum+=finalF; count++; }); }
+                    if(pMin === 999) pMin = 0;
+                    return { index, score: pMin + (sum/(count>0?count*100:1)), pos: pMin === 0 ? 'Abierta' : pMin };
+                }).sort((a, b) => a.score - b.score);
+
+                sortedShapes.forEach(si => {
+                    const option = document.createElement('option'); option.value = si.index; option.textContent = `Opción ${si.index + 1} (Pos. ${si.pos})`; optSelect.appendChild(option);
+                });
+            }
+            renderUserView();
+        }
+
+        function renderUserView() {
+            if(dictionary.length === 0) return;
+            document.querySelectorAll('#user-fretboard-container .dot').forEach(d => d.remove());
+            const targetRoot = document.getElementById('user-root').value;
+            const shapeId = document.getElementById('user-type').value;
+            const optIdx = document.getElementById('user-option').value;
+            const commentDiv = document.getElementById('user-comment');
+            const item = dictionary.find(d => d.id == shapeId);
+            
+            if(!item || !item.shapes[optIdx]) return;
+            if (item.comment && item.comment.trim() !== "") { commentDiv.textContent = item.comment; commentDiv.style.display = "block"; } else { commentDiv.style.display = "none"; }
+
+            const shape = item.shapes[optIdx];
+            let distance = (CHROMATIC.indexOf(targetRoot) - CHROMATIC.indexOf(item.root) + 12) % 12;
+            let minFret = 999;
+            for (let s in shape) { if(s==='isDerived') continue; shape[s].forEach(f => { if(f+distance < minFret) minFret=f+distance; }); }
+            if (minFret >= 12) distance -= 12;
+
+            const container = document.getElementById('user-fretboard-container');
+            for (let stringId in shape) {
+                if(stringId==='isDerived') continue;
+                shape[stringId].forEach(f => {
+                    let newFret = f + distance;
+                    if (newFret <= NUM_FRETS) {
+                        const fretDiv = container.querySelector(`.fret[data-string="${stringId}"][data-fret="${newFret}"]`);
+                        if (fretDiv) {
+                            const intervalInfo = getInterval(stringId, newFret, targetRoot);
+                            const dot = document.createElement('div');
+                            dot.className = intervalInfo.distance === 0 ? 'dot root' : 'dot';
+                            dot.dataset.label = intervalInfo.label;
+                            fretDiv.appendChild(dot);
+                        }
+                    }
+                });
+            }
+        }
+
+        // --- HOJA DE ACORDES ---
+        function addToCart() {
+            if(dictionary.length === 0) return;
+            const targetRoot = document.getElementById('user-root').value;
+            const item = dictionary.find(d => d.id == document.getElementById('user-type').value);
+            const optIdx = document.getElementById('user-option').value;
+            if(!item || !item.shapes[optIdx]) return;
+
+            const shape = item.shapes[optIdx];
+            let distance = (CHROMATIC.indexOf(targetRoot) - CHROMATIC.indexOf(item.root) + 12) % 12;
+            let minFret = 999;
+            for (let s in shape) { if(s==='isDerived') continue; shape[s].forEach(f => { if(f+distance < minFret) minFret=f+distance; }); }
+            if (minFret >= 12) distance -= 12;
+
+            let absShape = { 1: [], 2: [], 3: [], 4: [] };
+            for (let s in shape) { if(s==='isDerived') continue; shape[s].forEach(f => { let nf=f+distance; if(nf<=NUM_FRETS) absShape[s].push({fret:nf}); }); }
+
+            const optSel = document.getElementById('user-option');
+            cart.push({ id: Date.now(), title: `${targetRoot} ${item.name}`, subtitle: optSel.options[optSel.selectedIndex].text, comment: item.comment || "", root: targetRoot, shape: absShape });
+            document.getElementById('cart-count').textContent = cart.length; renderCart();
+            alert(`"${targetRoot} ${item.name}" se añadió a la Hoja.`);
+        }
+
+        function removeFromCart(id) { cart = cart.filter(i => i.id !== id); document.getElementById('cart-count').textContent = cart.length; renderCart(); }
+        function clearCart() { if(confirm("¿Vaciar toda la hoja?")) { cart = []; document.getElementById('cart-count').textContent = cart.length; renderCart(); } }
+
+        function renderCart() {
+            const grid = document.getElementById('cart-grid'); grid.innerHTML = '';
+            if(cart.length === 0) { grid.innerHTML = '<p class="empty-state">Ve a "Modo Visualización" y usa el botón verde para armar tu hoja de estudio.</p>'; return; }
+
+            cart.forEach(item => {
+                const wrap = document.createElement('div'); wrap.className = 'cart-item';
+                let comment = item.comment ? `<div style="font-size:11px; color:#856404; background-color:#fff3cd; padding:4px 6px; border-radius:3px; margin-top:5px; font-style:italic;">${item.comment}</div>` : '';
+                wrap.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:flex-start; text-align:left; margin-bottom:10px;">
+                        <div><h3 style="margin-bottom:2px;">${item.title}</h3><span style="font-size:12px; color:#7f8c8d;">${item.subtitle}</span>${comment}</div>
+                        <button class="danger small no-print" onclick="removeFromCart(${item.id})">✖</button></div>`;
+
+                const fb = document.createElement('div'); fb.style.overflowX = 'auto'; wrap.appendChild(fb);
+                let frets = []; for (let s in item.shape) item.shape[s].forEach(n => frets.push(n.fret));
+                
+                let startF=0, endF=4;
+                if (frets.length > 0) {
+                    let maxF = Math.max(...frets), minP = Math.min(...frets.filter(f => f>0));
+                    if(minP === Infinity) minP = 0;
+                    if(frets.includes(0) || maxF<=4) { startF=0; endF=Math.max(4, maxF); }
+                    else { startF = minP; endF = Math.max(minP+3, maxF); }
+                }
+
+                buildFretboardDOM(fb, false, true, startF, endF);
+                for (let s in item.shape) {
+                    item.shape[s].forEach(n => {
+                        const div = fb.querySelector(`.fret[data-string="${s}"][data-fret="${n.fret}"]`);
+                        if (div) {
+                            const info = getInterval(s, n.fret, item.root);
+                            const dot = document.createElement('div'); dot.className = info.distance === 0 ? 'dot root' : 'dot'; dot.dataset.label = info.label; div.appendChild(dot);
+                        }
+                    });
+                }
+                grid.appendChild(wrap);
+            });
+        }
+    </script>
+</body>
+</html>
